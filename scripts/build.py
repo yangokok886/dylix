@@ -24,6 +24,7 @@ app = ROOT / 'build' / platform / 'TheosMobileCompiler.app'
 if app.exists():
     shutil.rmtree(app)
 app.mkdir(parents=True, exist_ok=True)
+shutil.copyfile(ROOT / 'LICENSE', app / 'Dylix-LICENSE.txt')
 frameworks = app / 'Frameworks'
 frameworks.mkdir(exist_ok=True)
 names = ['ios_system', 'libLLVM', 'clang', 'lld'] + ([] if args.simulator else ['perl'])

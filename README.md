@@ -41,18 +41,15 @@ App 最低目标为 iOS 15；部分界面和后台能力按系统版本启用。
 git clone https://github.com/yangokok886/dylix.git
 cd dylix
 python3 scripts/fetch_toolchain.py
-# 提供你本地可使用的 Apple SDK：不要将 SDK 提交到 Git。
-export DYLIX_SDK_16_4=/absolute/path/iPhoneOS16.4.sdk
-export DYLIX_SDK_26_0=/absolute/path/iPhoneOS26.0.sdk
 rustup target add aarch64-apple-ios x86_64-apple-ios
-python3 scripts/build.py --sdk-root "$DYLIX_SDK_26_0"
+python3 scripts/build.py --sdk-root LocalSDKs/iPhoneOS26.0.sdk
 ```
 
 输出 `build/Dylix-1.0.3-build134-unsigned.ipa`。安装前使用自己的证书/适用安装方式处理主 App、Share Extension 和嵌套 framework 签名。仓库不包含个人证书、描述文件或共享 API 密钥。
 
 **两个 SDK 角色不同**：`--sdk-root` 决定 Dylix App 自身的构建 SDK；内嵌插件构建 SDK 可选 16.4 / 26.0，默认仍为 **SDK 16.4 + 最低 iOS 15**。
 
-完整环境配置、模拟器构建、依赖来源、测试与签名说明见 [docs/BUILDING.md](docs/BUILDING.md)。Apple SDK 是外部输入，不随 Git 源码或公开依赖包发布；本地生成的完整 IPA 会包含你配置的 SDK，请自行核对其分发许可。
+完整环境配置、模拟器构建、依赖来源、测试与签名说明见 [docs/BUILDING.md](docs/BUILDING.md)。仓库附带 SDK 16.4 与 26.0 构建输入；Apple SDK 保留 Apple 原有条款，不适用本项目 GPL。工具链通过下载脚本自动还原。
 
 ## AI、隐私与运行边界
 
@@ -62,7 +59,7 @@ python3 scripts/build.py --sdk-root "$DYLIX_SDK_26_0"
 
 IPA 导出依据 Objective-C 元数据，不等于还原源码。加密镜像会被识别并跳过；本项目没有通用解密或任意二进制执行入口。编译成功也不证明插件在目标 App 内的运行效果。
 
-**开源版已移除反馈机器人及 Telegram 入口**，设置中的“项目开源地址”打开本仓库。问题与建议请通过 GitHub Issues 提交并先脱敏。
+设置中的“项目开源地址”打开本仓库，其下“软件许可证”可离线查看 GPL 完整条款。问题与建议请通过 GitHub Issues 提交并先脱敏。
 
 ## 许可证与致谢
 

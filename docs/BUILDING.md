@@ -18,14 +18,9 @@ LLVM/Clang/LLD 14 来源为 holzschu/llvm-project；ios_system 3.0.5、Perl 5.34
 
 ## 2. Apple SDK
 
-分别设置：
+仓库包含两套 SDK 输入：`Resources/SDK`（16.4）和 `LocalSDKs/iPhoneOS26.0.sdk`（26.0），拉取源码后直接使用。Apple SDK 保留原有条款，不适用 Dylix 的 GPL 许可。
 
-```sh
-export DYLIX_SDK_16_4=/absolute/path/iPhoneOS16.4.sdk
-export DYLIX_SDK_26_0=/absolute/path/iPhoneOS26.0.sdk
-```
-
-两者须含 SDKSettings.plist，实际 Version 应为16.4/26.0。SDK 内容不在本仓库中；请通过你可使用的 Apple 开发环境和适用条款准备。构建时会校验元数据并压缩内嵌，默认插件 SDK16.4、最低 iOS15。
+如需使用其他本地副本，可以通过 `DYLIX_SDK_16_4` 与 `DYLIX_SDK_26_0` 环境变量覆盖路径。构建时校验 SDKSettings.plist 的 Version 并压缩内嵌；插件默认仍为 SDK16.4、最低 iOS15。
 
 ## 3. Rust 与 CMake
 
@@ -41,7 +36,7 @@ CMake 可用 `TMC_CMAKE` 指定可执行文件。Rust 桥使用 Cargo.lock 固�
 
 ```sh
 # 真机 App，以 iOS26 SDK 编译 Dylix 本身
-python3 scripts/build.py --sdk-root "$DYLIX_SDK_26_0"
+python3 scripts/build.py --sdk-root LocalSDKs/iPhoneOS26.0.sdk
 # 模拟器，当前实现为 x86_64
 python3 scripts/build.py --simulator
 ```
@@ -62,4 +57,4 @@ python3 scripts/test_package_schemes.py
 
 ## 发布材料
 
-公开源码与工具链资产不包含 SDK、证书、用户数据或旧构建。GPL 原创代码、Logos 等对应源码与构建脚本均随仓库提供；第三方许可见仓库及 App 内说明。外部 Apple SDK 与系统库仍受其各自条款约束。
+源码包含两套 SDK 构建输入；公开工具链资产另行下载。发布内容不含个人证书、用户数据或旧构建。GPL 原创代码、Logos 等对应源码与构建脚本均随仓库提供；第三方许可见仓库及 App 内说明。Apple SDK 与系统库仍受其各自条款约束。

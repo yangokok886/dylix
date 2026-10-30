@@ -1,7 +1,5 @@
-# Local build outputs and proprietary SDK inputs
+# Local build outputs and secrets
 /build/
-/LocalSDKs/
-/Resources/SDK/
 /Vendor/*.xcframework/
 /Vendor/REipa/target/
 /.local/

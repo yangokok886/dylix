@@ -29,7 +29,7 @@
 - libgit2 完整来源及 COPYING 在 Vendor/libgit2；其 GPLv2 linking exception 不将 Dylix 主程序强制改为 GPLv2。
 - Logos 的实际源码在 Resources/logos，使用 GPL-3.0-or-later。
 - 原生 AI 交互研究参考不代表复制代码或链接其运行时，见 AI-Research.txt；另参考 OpenMinis（https://github.com/OpenMinis/OpenMinis）的流式呈现与生命周期设计，Dylix 使用自己的 UIKit 实现。
-- Apple SDK 与 Apple 系统 framework 是外部输入/系统组件，不包含在开源仓库的许可授权中。
+- 仓库中的 Apple SDK 16.4 / 26.0 与 Apple 系统 framework 保留 Apple 条款，不属于本项目 GPL 许可授权范围。
 - 未分发个人 FLEX 测试样例、参考 macOS Perl 副本、设备日志、模型会话或用户附件。
 
 ## 预编译工具链
