@@ -743,7 +743,7 @@ static NSArray<NSString *> *sourcePaths(NSString *root) {
         // LLVM 14 LLD accepts -arch arm64e but emits ARM64_ALL. Reject it before packaging.
         if(!compileFailed&&[cpu isEqual:@"arm64e"]){NSData *linked=[NSData dataWithContentsOfFile:[build stringByAppendingPathComponent:dylibName]];struct mach_header_64 mh={0};if(linked.length>=sizeof(mh))[linked getBytes:&mh length:sizeof(mh)];if((mh.cpusubtype&0xffffff)!=2){compileFailed=YES;TMCLog(log,"error: 当前内嵌 LLVM 14 链接器将 arm64e 输出为 arm64，已停止打包。请在项目设置选择 arm64；iphoneos-arm64e 隐根包可使用 arm64 动态库。真正 arm64e ABI 需要更新链接器。\n");[NSFileManager.defaultManager removeItemAtPath:[build stringByAppendingPathComponent:dylibName] error:nil];}}
         BOOL toolSuccess = !compileFailed && projectSources.count > 0 && results.count == commands.count && [results.lastObject[@"exit"] intValue] == 0;
-        NSMutableDictionary *report = [@{@"execution": @"embedded iOS frameworks", @"commands": results, @"logos":logosResults, @"sourceCount":@(projectSources.count), @"success":@NO, @"projectName":tweakName,@"packageScheme":packageScheme,@"cpuArchitecture":cpu} mutableCopy];
+        NSMutableDictionary *report = [@{@"execution": @"embedded iOS frameworks", @"commands": results, @"logos":logosResults, @"sourceCount":@(projectSources.count), @"success":@NO, @"projectName":tweakName,@"packageScheme":packageScheme,@"cpuArchitecture":cpu,@"sdkVersion":sdkVersion,@"deploymentTarget":minimum} mutableCopy];
         NSMutableArray *artifacts = [NSMutableArray arrayWithObject:dylibName];
         for (NSString *object in objects) [artifacts addObject:object.lastPathComponent];
         for (NSString *name in artifacts) {
@@ -837,6 +837,8 @@ static NSArray<NSString *> *sourcePaths(NSString *root) {
     self.window.rootViewController = testing ? [[TMCNavigationController alloc] initWithRootViewController:[CompilerController new]] : TMCStudioRoot();
 #if TARGET_OS_SIMULATOR
     extern UIViewController *TFAIShare114Regression(void);
+    extern UIViewController *TFAIFile135Regression(void);
+    if([NSProcessInfo.processInfo.arguments containsObject:@"--ai-files135-test"])self.window.rootViewController=[[TMCNavigationController alloc]initWithRootViewController:TFAIFile135Regression()];
     extern UIViewController *TFAIWorkspace133Regression(void);
     if([NSProcessInfo.processInfo.arguments containsObject:@"--ai-workspace133-test"])self.window.rootViewController=[[TMCNavigationController alloc]initWithRootViewController:TFAIWorkspace133Regression()];
     extern UIViewController *TFAIRender122Regression(void);

@@ -4,6 +4,8 @@
 #import "../App/AI/Tools/TFAIDownload.h"
 #import "../App/GitService.h"
 #import "../App/GitPreferences.h"
+#import "../App/ArchiveImport.h"
+#import "../App/AI/Tools/TFAIBuildCache.h"
 static NSUInteger checks=0;static NSString *root,*projectID,*sessionID;static TFAIToolbox *box;
 static void Check(BOOL ok,NSString *name){if(!ok){fprintf(stderr,"FAIL: %s\n",name.UTF8String);exit(2);}checks++;printf("PASS: %s\n",name.UTF8String);}
 static void Write(NSString *relative,NSString *text){NSString *p=[root stringByAppendingPathComponent:relative];[NSFileManager.defaultManager createDirectoryAtPath:p.stringByDeletingLastPathComponent withIntermediateDirectories:YES attributes:nil error:nil];[text writeToFile:p atomically:YES encoding:NSUTF8StringEncoding error:nil];}
@@ -44,6 +46,38 @@ int main(int argc,const char **argv){@autoreleasepool {
  plan=Prepare(@"request_delete",@{@"path":@"B.m"},&error);Check([plan[@"critical"] boolValue],@"delete demands critical individual approval");Check(Execute(plan,YES,&error)!=nil&&Read(@"B.m")==nil,@"approved delete applied");Check(Await(^(TFAIResult done){[box undo:done];},&error)!=nil&&[Read(@"B.m") containsString:@"b = 2"],@"delete backup restores source");
  Check(Tool(@"propose_patch",@{@"edits":@[Edit(@"A.m",@"not present",@"x")]},NO,&error)==nil,@"unmatched patch rejected");Write(@"Repeated.m",@"foo foo");Check(Tool(@"propose_patch",@{@"edits":@[Edit(@"Repeated.m",@"foo",@"bar")]},NO,&error)==nil,@"ambiguous replacement rejected");
  result=Tool(@"search_text",@{@"query":@"int a"},NO,&error);Check([result[@"matches"] count]>=1,@"literal project search");result=Tool(@"list_files",@{},NO,&error);Check(![result[@"files"] containsObject:@"link.m"]&&![result[@"files"] containsObject:@"inner.m"],@"tree enumeration excludes symlinks");
+ // Raw cloned Theos sources are initialized using the same importer as clone_project.
+ Write(@"RawTheos/Makefile",@"TARGET = iphone:clang:latest:15.0\nTWEAK_NAME = Fixture\nFixture_FILES = Tweak.xm\nFixture_FRAMEWORKS = UIKit Foundation\ninclude $(THEOS_MAKE_PATH)/tweak.mk\n");
+ Write(@"RawTheos/Tweak.xm",@"%hook NSObject\n%end\n");
+ NSString *rawRoot=[root stringByAppendingPathComponent:@"RawTheos"];
+ NSDictionary *imported=TMCPrepareImportedProject(rawRoot,@"Fixture",&error);
+ Check(imported&&[imported[@"sources"] containsObject:@"Tweak.xm"],@"cloned Theos Makefile creates usable config");
+ Check([Read(@"RawTheos/Makefile") containsString:@"TWEAK_NAME = Fixture"],@"project preparation preserves original Makefile");
+ NSString *beforePreparation=Read(@"RawTheos/MobileCompiler.json");Check(TMCPrepareImportedProject(rawRoot,@"OtherName",&error)!=nil&&[Read(@"RawTheos/MobileCompiler.json") isEqual:beforePreparation],@"prepare existing config is idempotent");
+ TFAIToolbox *originalBox=box;box=[[TFAIToolbox alloc]initWithRoot:rawRoot projectID:projectID sessionID:[sessionID stringByAppendingString:@"-raw"]];
+ NSDictionary *prepared=Tool(@"prepare_project",@{},YES,&error);Check([prepared[@"config"][@"sources"] containsObject:@"Tweak.xm"],@"prepare tool returns full saved configuration");
+ Check(Tool(@"propose_build_settings",@{@"sdkVersion":@"26.0"},NO,&error)!=nil,@"SDK switch accepts imported Makefile notes without dropping them");box=originalBox;
+ // Cleanup ownership is verified for the complete selection before deleting anything.
+ NSString *docs=[root stringByAppendingPathComponent:@"OutputFixture"];[NSFileManager.defaultManager createDirectoryAtPath:docs withIntermediateDirectories:YES attributes:nil error:nil];
+ NSString *ownedID=[@"Build-" stringByAppendingString:NSUUID.UUID.UUIDString],*otherID=[@"Build-" stringByAppendingString:NSUUID.UUID.UUIDString];
+ for(NSString *identifier in @[ownedID,otherID])[NSFileManager.defaultManager createDirectoryAtPath:[docs stringByAppendingPathComponent:identifier] withIntermediateDirectories:YES attributes:nil error:nil];
+ Write(@".studio-build-cache.json",[[NSString alloc]initWithData:[NSJSONSerialization dataWithJSONObject:@{@"owner":root,@"items":@[ownedID]} options:0 error:nil] encoding:NSUTF8StringEncoding]);
+ Check(TFAIProjectBuilds(root,docs).count==1,@"list only owned generated builds");
+ NSString *alias=[root stringByAppendingPathComponent:@"DocumentsAlias"];[NSFileManager.defaultManager createSymbolicLinkAtPath:alias withDestinationPath:docs error:nil];Check(TFAIProjectBuilds(root,alias).count==1,@"system Documents path alias remains usable as on iOS /var");
+ Check(TFAICleanProjectBuilds(root,docs,@[ownedID,otherID],&error)==nil&&[NSFileManager.defaultManager fileExistsAtPath:[docs stringByAppendingPathComponent:ownedID]],@"mixed foreign selection rejected before deletion");
+ Check(TFAICleanProjectBuilds(root,docs,@[ownedID],&error)!=nil&&[NSFileManager.defaultManager fileExistsAtPath:[docs stringByAppendingPathComponent:otherID]],@"selected owned build removed; foreign build retained");
+ Check(TFAIProjectBuilds(root,docs).count==0,@"removed outputs vanish from build list");
+ // SDK switch preserves unrelated compiler/package options and rejects unsupported settings.
+ NSDictionary *settingsProposal=Tool(@"propose_build_settings",@{@"sdkVersion":@"26.0",@"deploymentTarget":@"15.0"},NO,&error);
+ Check(settingsProposal!=nil,@"SDK26 proposal available");
+ Check(Tool(@"apply_approved_patch",@{@"proposal_id":settingsProposal[@"proposal_id"]},YES,&error)!=nil,@"SDK switch applies through reviewed proposal");
+ NSDictionary *configured=Tool(@"read_project_config",@{},NO,&error);
+ Check([configured[@"effectiveSettings"][@"sdkVersion"] isEqual:@"26.0"]&&[configured[@"config"][@"sources"] count]>0,@"SDK26 selected with sources preserved");
+ Check(Prepare(@"propose_build_settings",@{@"sdkVersion":@"19.0"},&error)==nil,@"unknown SDK rejected");
+ Check(Prepare(@"propose_build_settings",@{@"sdkVersion":@"16.4",@"deploymentTarget":@"26.0"},&error)==nil,@"minimum OS above SDK rejected");
+ NSString *savedConfig=Read(@"MobileCompiler.json");[NSFileManager.defaultManager removeItemAtPath:[root stringByAppendingPathComponent:@"MobileCompiler.json"] error:nil];
+ Check([Tool(@"read_project_config",@{},NO,&error)[@"needsPreparation"] boolValue],@"missing config is actionable instead of Cocoa error");
+ Write(@"MobileCompiler.json",savedConfig);
  NSDictionary *config=@{@"name":@"renamed fixture",@"sources":@[@"A.m"]};result=Tool(@"propose_config_change",@{@"config":config},NO,&error);Check(result!=nil&&[result[@"edits"][0][@"kind"] isEqual:@"configuration"],@"configuration changes marked separately");Check(Prepare(@"propose_config_change",@{@"config":@{@"sources":@[@"../bad.m"]}},&error)==nil,@"configuration source traversal rejected");
  [TMCGitLease setBuilding:YES root:root];Check(Prepare(@"create_file",@{@"path":@"During.m",@"content":@"x"},&error)==nil,@"active build gate pauses source mutation");[TMCGitLease setBuilding:NO root:root];
  __block NSUInteger bridgeCalls=0;box.bridge=^(NSString *name,NSDictionary *args,TFAIResult done){bridgeCalls++;Check(NSThread.isMainThread,@"compiler bridge invoked on main");done(@{@"success":@YES,@"message":@"fixture compilation callback"},nil);};Check(Tool(@"build_project",@{},YES,&error)!=nil&&bridgeCalls==1,@"build request reaches real host bridge after approval");
