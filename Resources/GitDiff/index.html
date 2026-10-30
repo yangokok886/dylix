@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=3">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'">
+<link rel="stylesheet" href="diff2html-3.4.55.min.css"><link rel="stylesheet" href="review.css">
+<title>差异审阅</title></head><body>
+<header class="review-toolbar">
+ <div class="summary"><span class="review-mark" aria-hidden="true">⌘</span><span id="summary">正在读取差异</span><span id="stats" class="stats"></span></div>
+ <div class="controls"><div class="segments" role="group" aria-label="比较视图"><button id="unified" aria-pressed="true">合并</button><button id="split" aria-pressed="false">对照</button></div><button id="wrap" class="icon-button" title="自动换行" aria-label="自动换行" aria-pressed="false">↵</button><span class="control-divider"></span><span id="position" class="position">0 / 0</span><button id="previous" class="icon-button" aria-label="上一个变更">↑</button><button id="next" class="icon-button" aria-label="下一个变更">↓</button></div>
+</header>
+<section class="comparison"><div class="version"><i class="dot old"></i><span id="old-label">原始版本</span></div><span class="compare-arrow" aria-hidden="true">→</span><div class="version"><i class="dot new"></i><span id="new-label">修改后</span></div><button id="info" class="info-button" aria-label="比较说明" aria-expanded="false">ⓘ</button></section>
+<aside id="note" hidden></aside><main id="diff" aria-label="代码差异"></main>
+<div id="empty" hidden><span class="empty-symbol">✓</span><h2>没有文本变更</h2><p>当前比较范围内没有可显示的代码差异。</p></div>
+<footer class="review-footer"><span id="footer-mode">合并视图</span><span>只读审阅<span class="footer-dot">·</span>本机 Git</span></footer>
+<script src="../Editor/highlight-11.11.1.min.js"></script><script src="diff2html-ui-base-3.4.55.min.js"></script><script src="review.js"></script>
+</body></html>

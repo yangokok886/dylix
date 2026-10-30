@@ -1,0 +1,11 @@
+{
+  "component": "diff2html",
+  "version": "3.4.55",
+  "source": "https://github.com/rtfpessoa/diff2html/tree/3.4.55",
+  "distribution": "https://cdn.jsdelivr.net/npm/diff2html@3.4.55/bundles/",
+  "license": "MIT",
+  "resources": {
+    "diff2html-3.4.55.min.css": "20c04ae15359a748afc1e7d29f9d5bb3076cae19341e83132dcd86a851c50578",
+    "diff2html-ui-base-3.4.55.min.js": "fbb8869b5cad658fdd0bbdd60b2a87083412ccaa6ee3b0e03e7bf3c00d0205fa"
+  }
+}

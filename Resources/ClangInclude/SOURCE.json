@@ -1,0 +1,6 @@
+{
+  "source": "https://github.com/holzschu/a-Shell",
+  "commit": "a2f5f20b77ea863cfffbbf4f8011f982eb607ea1",
+  "path": "Resources/usr_old/lib/clang/12.0.0/include",
+  "note": "Upstream a-Shell generated intrinsic headers; tested with bundled Clang/LLVM frameworks."
+}

@@ -1,0 +1,72 @@
+{
+  "title": "如何获取 PAT",
+  "reviewed": "2026-10-29",
+  "sections": [
+    {
+      "title": "先分清：账号、项目与仓库",
+      "text": "Git 服务账号像一把钥匙，仓库像存放某个项目的文件夹。全局 Git 设置只共享提交者身份和登录账号，各项目的仓库地址单独保存。\n\n例如：项目 A 设置为 https://github.com/你的账号/ProjectA.git；项目 B 设置为 https://github.com/你的账号/ProjectB.git。同一个账号可以访问多个仓库，也可以为不同项目绑定不同账号。\n\n“提交 Commit”把版本保存在手机本地；“推送 Push”才上传到当前项目配置的远程仓库。填写账号或 PAT 不会自动创建 GitHub 仓库，也不会把所有项目上传到同一个仓库。仓库地址相同的项目会指向同一个远程仓库，请按项目核对。\n\n先在 GitHub 或 Gitee 创建仓库，复制 HTTPS 地址，再进入项目 → 源代码管理 → origin 远程与认证填写。项目 Git 设置可选择继承服务账号或按仓库覆盖；自动推送需单独开启并确认仓库和分支。"
+    },
+    {
+      "title": "GitHub · 推荐细粒度令牌",
+      "text": "1. 登录 GitHub，打开头像 → Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token。也可点击下方“打开 GitHub 令牌创建页”。\n\n2. Token name 填 Dylix，选择到期时间。Resource owner 选择仓库所属的个人或组织账号。\n\n3. Repository access 选择 Only select repositories，勾选要在手机上操作的仓库；多个项目可选择多个仓库。以后新增仓库时，记得补充访问范围。\n\n4. Repository permissions 中：仅克隆或拉取时，Contents 选 Read-only；需要推送源码时，Contents 选 Read and write。Metadata 会提供基础读取权限。若推送 .github/workflows 下的工作流文件，还需 Workflows 写入权限。普通源码操作无需额外开启其他权限。\n\n5. 点击 Generate token。生成后立即复制完整令牌；离开页面后通常只显示令牌信息，不再显示完整值。组织可能要求管理员批准，Pending 状态需等待批准后再访问私有仓库。\n\n6. 返回 Dylix → 设置 → Git → Git 服务与账号，添加服务 https://github.com，用户名填 GitHub 登录用户名，PAT 填刚复制的令牌。保存后将该账号设为服务默认账号，或在项目中单独绑定。",
+      "links": [
+        {
+          "title": "打开 GitHub 令牌创建页",
+          "url": "https://github.com/settings/personal-access-tokens/new"
+        },
+        {
+          "title": "GitHub 官方教程（中文）",
+          "url": "https://docs.github.com/zh/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens"
+        }
+      ]
+    },
+    {
+      "title": "GitHub · Classic 令牌适用时",
+      "text": "优先使用细粒度令牌。如果仓库协作身份或组织策略不支持所需的细粒度访问，可按 GitHub 官方说明使用 Tokens (classic)。\n\n只访问公开仓库可按需要选择 public_repo；访问私有仓库通常需要 repo。Classic 的授权范围较宽，请按实际用途选择。修改 Actions 工作流文件时还需 workflow。组织启用 SSO 时，可能需要为令牌完成组织授权。\n\n无论令牌类型如何，账号本身都应拥有目标仓库的读取或写入权限；令牌不会额外授予仓库成员权限。"
+    },
+    {
+      "title": "Gitee · 私人令牌",
+      "text": "1. 登录 Gitee，进入设置 → 私人令牌，生成新令牌。用户名填写账号的登录用户名，勿填昵称或邮箱。\n\n2. 勾选 projects 范围以使用仓库 API、私有仓库及 Git over HTTPS 操作。令牌权限仍受账号自身仓库权限限制，请按实际需要授予并保管。\n\n3. 在 Dylix → 设置 → Git → 快速设置选择 Gitee，填写身份、用户名及令牌；或在服务账号列表添加 https://gitee.com。PAT 保存在钥匙串，留空编辑会保留已有令牌。\n\n4. 项目 → 项目版本与远程仓库 → 远程仓库与账号 → 选择 / 创建 Gitee 仓库。可选择已有仓库，或创建个人私有空仓库。连接后先保存本机版本，再上传；不同项目分别选择仓库。\n\n5. 也可手动填写 https://gitee.com/用户名/仓库.git，并在项目认证中绑定 Gitee 账号。GitHub 与 Gitee 账号及令牌分别保存，不会跨服务使用。",
+      "links": [
+        {
+          "title": "打开 Gitee 私人令牌设置",
+          "url": "https://gitee.com/profile/personal_access_tokens"
+        },
+        {
+          "title": "Gitee 官方 API 文档",
+          "url": "https://gitee.com/api/v5/swagger#/getV5UserRepos"
+        },
+        {
+          "title": "Gitee 官方认证说明",
+          "url": "https://gitee.com/api/v5/oauth_doc#/"
+        }
+      ]
+    },
+    {
+      "title": "GitLab · HTTPS 仓库令牌",
+      "text": "1. 登录 GitLab，打开头像 → Edit profile → Access → Personal access tokens。不同版本也可能显示为 User settings / Access tokens；自建 GitLab 使用你自己的服务域名。\n\n2. 新建令牌，填写名称与到期时间。新版若提供 Generate token 下拉菜单，可选择 Legacy token，以使用 Git over HTTPS 的仓库权限范围。\n\n3. 仅克隆或拉取选 read_repository；需要拉取并推送选 write_repository。常规 Git 仓库操作不必选择 api。\n\n4. 生成后复制令牌，返回 Dylix 添加账号。服务地址填 https://gitlab.com 或自建服务地址，用户名填 GitLab 用户名，PAT 填令牌。\n\n5. 在项目中设置对应 GitLab 仓库的 HTTPS 地址，并选择此服务账号。",
+      "links": [
+        {
+          "title": "打开 GitLab.com 令牌页面",
+          "url": "https://gitlab.com/-/user_settings/personal_access_tokens"
+        },
+        {
+          "title": "GitLab 官方教程",
+          "url": "https://docs.gitlab.com/user/profile/personal_access_tokens/"
+        },
+        {
+          "title": "GitLab 官方权限说明",
+          "url": "https://docs.gitlab.com/security/tokens/access_token_scopes/"
+        }
+      ]
+    },
+    {
+      "title": "保存后如何连接项目",
+      "text": "1. 项目 → 源代码管理：尚未初始化的项目先初始化 Git。\n\n2. 在 origin 远程与认证填写该项目的 HTTPS 仓库地址，例如 https://github.com/你的账号/MyTweak.git。使用全局服务账号时，这里无需再次填写 PAT。\n\n3. 在项目 Git 设置中确认当前身份与认证来源；同一服务有多个账号时，可为此仓库绑定指定账号。\n\n4. 手动提交需要先暂存文件，再填写提交说明；自动提交需在 Git 设置中开启。两者默认都只在手机本地保存。\n\n5. 选择推送时核对仓库和分支。已有远程提交的仓库，建议先克隆到本机，再继续开发，以保留同一条提交历史。GitHub 仓库默认分支名常为 main。"
+    },
+    {
+      "title": "遇到认证失败时",
+      "text": "• 检查账号是否对目标仓库有权限、仓库地址和当前项目的账号绑定是否正确。\n• 检查 PAT 是否到期、是否选中了该仓库，以及推送是否具有 Contents 写入或 write_repository 权限。\n• 检查组织批准或 SSO 授权是否已完成。\n• 令牌重建后，进入 Git 服务与账号修改保存。删除账号会删除本机钥匙串中的令牌；需要撤销远程权限时，请到 GitHub / Gitee / GitLab 的令牌设置页面撤销。\n\nPAT 相当于访问钥匙，请只粘贴到认证输入框，避免写入源码、仓库 URL、提交说明或日志。本应用把 PAT 保存在本机钥匙串。\n\n本教程根据 GitHub / Gitee / GitLab 官方资料整理，核对日期：2026-10-29。官方界面可能随版本调整；下方链接会打开浏览器，需要联网登录。"
+    }
+  ]
+}

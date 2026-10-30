@@ -1,0 +1,6 @@
+#import <Foundation/Foundation.h>
+// Local UI capabilities are scoped independently of model-generated paths.
+static inline NSString *SFCanonical(NSString *path){NSString *ancestor=path.stringByStandardizingPath;NSMutableArray *tail=[NSMutableArray new];while(ancestor.length>1&&![NSFileManager.defaultManager fileExistsAtPath:ancestor]){[tail insertObject:ancestor.lastPathComponent atIndex:0];ancestor=ancestor.stringByDeletingLastPathComponent;}NSString *resolved=ancestor.stringByResolvingSymlinksInPath;for(NSString *part in tail)resolved=[resolved stringByAppendingPathComponent:part];return resolved;}
+static BOOL SFInside(NSString *base,NSString *path){NSString *root=SFCanonical(base),*resolved=SFCanonical(path);return root.length&&([root isEqual:resolved]||[resolved hasPrefix:[root stringByAppendingString:@"/"]]);}
+static NSString *SFPath(NSString *base,NSString *relative){if(!relative.length||relative.isAbsolutePath||[relative.pathComponents containsObject:@".."]||[relative containsString:@"\\"])return nil;NSString *p=[base stringByAppendingPathComponent:relative];return SFInside(base,p)?p:nil;}
+static inline NSString *SFBuildPath(NSString *docs,id identifier){if(![identifier isKindOfClass:NSString.class]||![identifier hasPrefix:@"Build-"]||![[NSUUID alloc]initWithUUIDString:[identifier substringFromIndex:6]])return nil;return SFPath(docs,identifier);}

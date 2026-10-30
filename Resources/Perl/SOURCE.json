@@ -1,0 +1,7 @@
+{
+  "source": "https://github.com/holzschu/a-Shell",
+  "commit": "a2f5f20b77ea863cfffbbf4f8011f982eb607ea1",
+  "path": "Resources/Perl",
+  "perl_version": "5.34.0",
+  "additional_module": "aliased.pm copied from existing Mac Extras (pure Perl)"
+}

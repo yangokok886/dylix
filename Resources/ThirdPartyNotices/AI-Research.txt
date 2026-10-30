@@ -1,0 +1,14 @@
+AI 原生模块与研究参考
+
+本版 AI 使用原生 UIKit、URLSession、Keychain 与既有编译/Git/解压服务，无新增第三方运行时。
+
+设计研究：
+Cline — Apache-2.0 — https://github.com/cline/cline
+Continue — Apache-2.0 — https://github.com/continuedev/continue
+Aider — Apache-2.0 — https://github.com/Aider-AI/aider
+Roo Code — Apache-2.0 — https://github.com/RooCodeInc/Roo-Code
+Cherry Studio — AGPL-3.0 — https://github.com/CherryHQ/cherry-studio
+
+以上仅为交互与架构参考，未复制实现代码或素材；各自许可证适用于其上游项目。AI 协议依据 OpenAI 与 Anthropic 官方协议/公开 SDK 类型文件独立实现。
+
+会话按项目保存在本机；配置服务后仅在你发送时联网。API 密钥保存到钥匙串；源代码修改逐项预览确认。编译发生在本机，编译成功不代表插件注入或宿主运行已验证。

@@ -1,0 +1,4 @@
+#import "TFAIMessageMetadata.h"
+#import <math.h>
+BOOL TFAIValidMessageTime(id value){return [value isKindOfClass:NSNumber.class]&&isfinite([value doubleValue])&&[value doubleValue]>0&&[value doubleValue]<253402300800.0;}
+NSArray<NSDictionary *> *TFAIMessageMetadata(NSArray<NSDictionary *> *messages,NSDictionary *legacyTimes){NSMutableArray *result=[NSMutableArray new];NSUInteger index=0;for(NSDictionary *raw in messages){if(![raw isKindOfClass:NSDictionary.class]){index++;continue;}NSMutableDictionary *m=[raw mutableCopy];if(![m[@"messageID"] isKindOfClass:NSString.class]||![m[@"messageID"] length])m[@"messageID"]=NSUUID.UUID.UUIDString;id old=[legacyTimes isKindOfClass:NSDictionary.class]?legacyTimes[[NSString stringWithFormat:@"%lu",(unsigned long)index]]:nil;if(!TFAIValidMessageTime(m[@"timestamp"])){[m removeObjectForKey:@"timestamp"];if(TFAIValidMessageTime(old))m[@"timestamp"]=old;}[result addObject:m];index++;}return result;}

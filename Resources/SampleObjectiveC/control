@@ -1,0 +1,8 @@
+Package: local.mobilecompiler.localobjctest
+Name: LocalObjCTest
+Version: 1.2.3
+Architecture: iphoneos-arm64
+Maintainer: Local Compiler Test
+Section: Tweaks
+Depends: mobilesubstrate, firmware (>= 15.0)
+Description: Imported metadata verification fixture

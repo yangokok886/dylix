@@ -1,0 +1,15 @@
+Compatibility rule-library upstream references (catalog upstream-1)
+
+Rules TF027-TF039 reference diagnostics and test scenarios from llvm/llvm-project,
+revision llvmorg-14.0.0. LLVM license: Apache-2.0 WITH LLVM-exception;
+see existing llvm-LICENSE.txt and clang-LICENSE.txt.
+
+Rules TF040-TF044 reference the Logos parser's diagnostics at
+https://github.com/theos/logos/blob/777925d1add4ee3485a2432a6f6d5e3ded59de7b/bin/logos.pl
+Logos license: GPL-3.0-or-later; see existing Logos-LICENSE.txt.
+
+This update supplies original diagnostic matching, Chinese explanations and
+small regression fixtures. It does not embed clang-tidy checks or copy Logos
+parser implementations into the repair engine. Exact sources/revisions are
+included in rules.json. Research source snapshots, hashes and license copies
+are retained in evidence/rules-upstream-expansion/research.

@@ -1,0 +1,1485 @@
+{
+  "schemaVersion": 1,
+  "compilerMajor": 14,
+  "rules": [
+    {
+      "id": "TF001",
+      "name": "weak/strong typeof 的 ObjC++ 拼写",
+      "diagnosticConditions": {
+        "anyContains": [
+          "expected unqualified-id",
+          "typeof"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge >= 0.5.5",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "在诊断行确认 weak/strong 声明后使用 __typeof__，不做全局替换。",
+      "sources": [
+        "https://releases.llvm.org/14.0.0/tools/clang/docs/UsersManual.html"
+      ],
+      "handling": {
+        "category": "repairable",
+        "changeKind": "source",
+        "handler": "typeof",
+        "automaticEnabled": true
+      },
+      "validation": {
+        "status": "verified",
+        "evidence": "evidence/0.5.3-repair-*"
+      }
+    },
+    {
+      "id": "TF002",
+      "name": "NSInteger 到枚举的显式转换",
+      "diagnosticConditions": {
+        "anyContains": [
+          "from incompatible type 'NSInteger'"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge >= 0.5.5",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "仅适配已诊断的简单 property = [value integerValue]；枚举值合法性由工程负责。",
+      "sources": [
+        "https://releases.llvm.org/14.0.0/tools/clang/docs/UsersManual.html",
+        "https://github.com/llvm/llvm-project/blob/llvmorg-14.0.0/clang/include/clang/Basic/DiagnosticSemaKinds.td"
+      ],
+      "handling": {
+        "category": "repairable",
+        "changeKind": "source",
+        "handler": "enum",
+        "automaticEnabled": true
+      },
+      "validation": {
+        "status": "verified",
+        "evidence": "evidence/0.5.3-repair-*"
+      }
+    },
+    {
+      "id": "TF003",
+      "name": "Mach task 信息声明缺失",
+      "diagnosticConditions": {
+        "anyContains": [
+          "task_basic_info",
+          "TASK_BASIC_INFO",
+          "task_info_t"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge >= 0.5.5",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "确认源码实际引用 Mach task 类型，补充 SDK 的 mach/task_info.h。",
+      "sources": [
+        "https://releases.llvm.org/14.0.0/tools/clang/docs/UsersManual.html",
+        "https://github.com/apple-oss-distributions/xnu/blob/main/osfmk/mach/task_info.h"
+      ],
+      "handling": {
+        "category": "repairable",
+        "changeKind": "source",
+        "handler": "mach",
+        "automaticEnabled": true
+      },
+      "validation": {
+        "status": "verified",
+        "evidence": "evidence/0.5.3-repair-*"
+      }
+    },
+    {
+      "id": "TF004",
+      "name": "Clang Fix-It 缺失分号",
+      "diagnosticConditions": {
+        "anyContains": [
+          "expected ';'"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge >= 0.5.5",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "只接收编译器给出的单个分号插入范围；排除宏、冲突及过期快照。",
+      "sources": [
+        "https://releases.llvm.org/14.0.0/tools/clang/docs/UsersManual.html#cmdoption-fdiagnostics-parseable-fixits",
+        "https://github.com/llvm/llvm-project/blob/llvmorg-14.0.0/clang/test/FixIt/fixit.c"
+      ],
+      "handling": {
+        "category": "repairable",
+        "changeKind": "source",
+        "handler": "fixit-semicolon",
+        "automaticEnabled": true
+      },
+      "validation": {
+        "status": "verified",
+        "evidence": "evidence/0.5.5-rules/embedded-fixit; tests/test_rule_library.py"
+      }
+    },
+    {
+      "id": "TF005",
+      "name": "工程内唯一头文件搜索路径",
+      "diagnosticConditions": {
+        "anyContains": [
+          "file not found"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge >= 0.5.5",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "仅在工程内存在唯一匹配头文件、配置与构建快照一致时添加 includeDirectories。",
+      "sources": [
+        "https://releases.llvm.org/14.0.0/tools/clang/docs/UsersManual.html",
+        "https://theos.dev/docs/variables"
+      ],
+      "handling": {
+        "category": "repairable",
+        "changeKind": "configuration",
+        "handler": "include-directory",
+        "automaticEnabled": true
+      },
+      "validation": {
+        "status": "verified",
+        "evidence": "evidence/0.5.5-rules/embedded-fixit; tests/test_rule_library.py"
+      }
+    },
+    {
+      "id": "TF006",
+      "name": "真实头文件依赖缺失",
+      "diagnosticConditions": {
+        "anyContains": [
+          "file not found"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge >= 0.5.5",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "查明依赖来源并导入真实头文件或 SDK；不生成伪造声明。",
+      "sources": [
+        "https://releases.llvm.org/14.0.0/tools/clang/docs/UsersManual.html",
+        "https://theos.dev/docs/variables"
+      ],
+      "handling": {
+        "category": "advice",
+        "changeKind": "advice",
+        "handler": "advice",
+        "automaticEnabled": false
+      },
+      "validation": {
+        "status": "pending",
+        "evidence": "待本版回归，未验证建议不执行自动修改"
+      }
+    },
+    {
+      "id": "TF007",
+      "name": "同名头文件歧义",
+      "diagnosticConditions": {
+        "anyContains": [
+          "file not found"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge >= 0.5.5",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "检查工程内多个同名头文件的所属依赖，再在项目设置选择正确搜索路径。",
+      "sources": [
+        "https://releases.llvm.org/14.0.0/tools/clang/docs/UsersManual.html",
+        "https://theos.dev/docs/variables"
+      ],
+      "handling": {
+        "category": "choice",
+        "changeKind": "choice",
+        "handler": "advice",
+        "automaticEnabled": false
+      },
+      "validation": {
+        "status": "pending",
+        "evidence": "待本版回归，未验证建议不执行自动修改"
+      }
+    },
+    {
+      "id": "TF008",
+      "name": "Framework 搜索路径或链接缺失",
+      "diagnosticConditions": {
+        "anyContains": [
+          "framework not found",
+          "unable to find framework"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge >= 0.5.5",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "核对符号所属 Framework；已有依赖可在 Frameworks 中添加，缺失二进制需导入匹配设备架构的依赖。",
+      "sources": [
+        "https://releases.llvm.org/14.0.0/tools/clang/docs/UsersManual.html",
+        "https://theos.dev/docs/variables"
+      ],
+      "handling": {
+        "category": "choice",
+        "changeKind": "choice",
+        "handler": "advice",
+        "automaticEnabled": false
+      },
+      "validation": {
+        "status": "pending",
+        "evidence": "待本版回归，未验证建议不执行自动修改"
+      }
+    },
+    {
+      "id": "TF009",
+      "name": "Library 缺失或搜索目录错误",
+      "diagnosticConditions": {
+        "anyContains": [
+          "library not found",
+          "unable to find library",
+          "library not found for -l"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge >= 0.5.5",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "核对 -l 名称、真实库文件、架构和搜索目录，避免按符号猜测依赖。",
+      "sources": [
+        "https://releases.llvm.org/14.0.0/tools/clang/docs/UsersManual.html",
+        "https://theos.dev/docs/variables"
+      ],
+      "handling": {
+        "category": "choice",
+        "changeKind": "choice",
+        "handler": "advice",
+        "automaticEnabled": false
+      },
+      "validation": {
+        "status": "pending",
+        "evidence": "待本版回归，未验证建议不执行自动修改"
+      }
+    },
+    {
+      "id": "TF010",
+      "name": "实现源文件遗漏",
+      "diagnosticConditions": {
+        "anyContains": [
+          "Undefined symbols",
+          "undefined symbol"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge >= 0.5.5",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "检查符号实现是否位于 sources 外；确认目标归属后手工加入源文件列表。",
+      "sources": [
+        "https://theos.dev/docs/variables"
+      ],
+      "handling": {
+        "category": "choice",
+        "changeKind": "choice",
+        "handler": "advice",
+        "automaticEnabled": false
+      },
+      "validation": {
+        "status": "pending",
+        "evidence": "待本版回归，未验证建议不执行自动修改"
+      }
+    },
+    {
+      "id": "TF011",
+      "name": "Makefile 引用不存在的源文件",
+      "diagnosticConditions": {
+        "anyContains": [
+          "source file",
+          "源文件",
+          "no such file or directory"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge >= 0.5.5",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "恢复真实源文件或修正清单路径，避免删除条目掩盖缺失实现。",
+      "sources": [
+        "https://theos.dev/docs/variables"
+      ],
+      "handling": {
+        "category": "advice",
+        "changeKind": "advice",
+        "handler": "advice",
+        "automaticEnabled": false
+      },
+      "validation": {
+        "status": "pending",
+        "evidence": "待本版回归，未验证建议不执行自动修改"
+      }
+    },
+    {
+      "id": "TF012",
+      "name": "Objective-C 文件包含 C++ 语法",
+      "diagnosticConditions": {
+        "anyContains": [
+          "unknown type name 'namespace'",
+          "'string' file not found",
+          "'vector' file not found",
+          "unknown type name 'std'",
+          "use of undeclared identifier 'std'"
+        ],
+        "caseSensitive": false,
+        "fileExtensions": [
+          "m",
+          "x",
+          "c"
+        ]
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge >= 0.5.5",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "确认文件确实含 C++ 后使用 .mm/ObjC++；不要为通过编译统一转换所有文件。",
+      "sources": [
+        "https://releases.llvm.org/14.0.0/tools/clang/docs/UsersManual.html",
+        "https://theos.dev/docs/variables"
+      ],
+      "handling": {
+        "category": "choice",
+        "changeKind": "choice",
+        "handler": "advice",
+        "automaticEnabled": false
+      },
+      "validation": {
+        "status": "pending",
+        "evidence": "待本版回归，未验证建议不执行自动修改"
+      }
+    },
+    {
+      "id": "TF013",
+      "name": "C 文件含 Objective-C 语法",
+      "diagnosticConditions": {
+        "anyContains": [
+          "expected identifier",
+          "unexpected @"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge >= 0.5.5",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "检查 @interface/@implementation 所在文件是否需使用 .m/.mm；先核对目标语言。",
+      "sources": [
+        "https://releases.llvm.org/14.0.0/tools/clang/docs/UsersManual.html"
+      ],
+      "handling": {
+        "category": "choice",
+        "changeKind": "choice",
+        "handler": "advice",
+        "automaticEnabled": false
+      },
+      "validation": {
+        "status": "pending",
+        "evidence": "待本版回归，未验证建议不执行自动修改"
+      }
+    },
+    {
+      "id": "TF014",
+      "name": "C++ 标准不匹配",
+      "diagnosticConditions": {
+        "anyContains": [
+          "C++11",
+          "C++14",
+          "C++17",
+          "C++20",
+          "only available with"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge >= 0.5.5",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "按依赖声明选择 cxxStandard，LLVM14 未覆盖的新标准特性需调整工具链。",
+      "sources": [
+        "https://releases.llvm.org/14.0.0/tools/clang/docs/UsersManual.html",
+        "https://theos.dev/docs/variables"
+      ],
+      "handling": {
+        "category": "choice",
+        "changeKind": "choice",
+        "handler": "advice",
+        "automaticEnabled": false
+      },
+      "validation": {
+        "status": "pending",
+        "evidence": "待本版回归，未验证建议不执行自动修改"
+      }
+    },
+    {
+      "id": "TF015",
+      "name": "C 标准不匹配",
+      "diagnosticConditions": {
+        "anyContains": [
+          "C99",
+          "C11",
+          "C17",
+          "ISO C90"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge >= 0.5.5",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "在配置中选 cStandard；核对代码及依赖要求。",
+      "sources": [
+        "https://releases.llvm.org/14.0.0/tools/clang/docs/UsersManual.html",
+        "https://theos.dev/docs/variables"
+      ],
+      "handling": {
+        "category": "choice",
+        "changeKind": "choice",
+        "handler": "advice",
+        "automaticEnabled": false
+      },
+      "validation": {
+        "status": "pending",
+        "evidence": "待本版回归，未验证建议不执行自动修改"
+      }
+    },
+    {
+      "id": "TF016",
+      "name": "ARC 下手动 retain/release",
+      "diagnosticConditions": {
+        "anyContains": [
+          "ARC forbids explicit message send",
+          "ARC forbids use of"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge >= 0.5.5",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "确定源文件内存管理模式；移除调用可能影响生命周期，需开发者选择策略。",
+      "sources": [
+        "https://releases.llvm.org/14.0.0/tools/clang/docs/UsersManual.html",
+        "https://theos.dev/docs/variables",
+        "https://releases.llvm.org/14.0.0/tools/clang/docs/AutomaticReferenceCounting.html"
+      ],
+      "handling": {
+        "category": "choice",
+        "changeKind": "choice",
+        "handler": "advice",
+        "automaticEnabled": false
+      },
+      "validation": {
+        "status": "pending",
+        "evidence": "待本版回归，未验证建议不执行自动修改"
+      }
+    },
+    {
+      "id": "TF017",
+      "name": "弱引用需要 ARC 或运行时支持",
+      "diagnosticConditions": {
+        "anyContains": [
+          "cannot create __weak",
+          "does not support weak references"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge >= 0.5.5",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "检查 objcArc、部署目标和类弱引用支持，避免自动改 unsafe_unretained。",
+      "sources": [
+        "https://releases.llvm.org/14.0.0/tools/clang/docs/UsersManual.html",
+        "https://releases.llvm.org/14.0.0/tools/clang/docs/AutomaticReferenceCounting.html"
+      ],
+      "handling": {
+        "category": "choice",
+        "changeKind": "choice",
+        "handler": "advice",
+        "automaticEnabled": false
+      },
+      "validation": {
+        "status": "pending",
+        "evidence": "待本版回归，未验证建议不执行自动修改"
+      }
+    },
+    {
+      "id": "TF018",
+      "name": "bridge 所有权转换",
+      "diagnosticConditions": {
+        "anyContains": [
+          "requires a bridged cast",
+          "requires a bridge"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge >= 0.5.5",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "由调用方确认 CF/ObjC 所有权后选择 __bridge / __bridge_transfer / __bridge_retained。",
+      "sources": [
+        "https://releases.llvm.org/14.0.0/tools/clang/docs/UsersManual.html",
+        "https://releases.llvm.org/14.0.0/tools/clang/docs/AutomaticReferenceCounting.html"
+      ],
+      "handling": {
+        "category": "choice",
+        "changeKind": "choice",
+        "handler": "advice",
+        "automaticEnabled": false
+      },
+      "validation": {
+        "status": "pending",
+        "evidence": "待本版回归，未验证建议不执行自动修改"
+      }
+    },
+    {
+      "id": "TF019",
+      "name": "类型或 nullability 不兼容",
+      "diagnosticConditions": {
+        "anyContains": [
+          "incompatible pointer",
+          "incompatible type",
+          "nullability"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge >= 0.5.5",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "核对真实接口、泛型和所有权；不批量插入强转隐藏接口错误。",
+      "sources": [
+        "https://releases.llvm.org/14.0.0/tools/clang/docs/UsersManual.html"
+      ],
+      "handling": {
+        "category": "advice",
+        "changeKind": "advice",
+        "handler": "advice",
+        "automaticEnabled": false
+      },
+      "validation": {
+        "status": "pending",
+        "evidence": "待本版回归，未验证建议不执行自动修改"
+      }
+    },
+    {
+      "id": "TF020",
+      "name": "静态初始化依赖运行时表达式",
+      "diagnosticConditions": {
+        "anyContains": [
+          "initializer element is not a compile-time constant",
+          "not a constant expression"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge >= 0.5.5",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "需要按生命周期移到方法、dispatch_once 或初始化流程，属于业务逻辑判断。",
+      "sources": [
+        "https://releases.llvm.org/14.0.0/tools/clang/docs/UsersManual.html"
+      ],
+      "handling": {
+        "category": "advice",
+        "changeKind": "advice",
+        "handler": "advice",
+        "automaticEnabled": false
+      },
+      "validation": {
+        "status": "pending",
+        "evidence": "待本版回归，未验证建议不执行自动修改"
+      }
+    },
+    {
+      "id": "TF021",
+      "name": "Logos 预处理或 generator 依赖",
+      "diagnosticConditions": {
+        "anyRegex": [
+          "Can't locate (?:Logos/|Logos\\.pm)",
+          "(?:unknown|unsupported) (?:Logos )?generator",
+          "(?:undefined symbol.*MSHookMessageEx|MSHookMessageEx.*undefined)"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge >= 0.5.5",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "检查 Logos 语法、generator、substrate/libhooker 真实依赖和多文件符号归属。",
+      "sources": [
+        "https://github.com/theos/logos/blob/master/README.md",
+        "https://theos.dev/docs/variables"
+      ],
+      "handling": {
+        "category": "advice",
+        "changeKind": "advice",
+        "handler": "advice",
+        "automaticEnabled": false
+      },
+      "validation": {
+        "status": "pending",
+        "evidence": "待本版回归，未验证建议不执行自动修改"
+      }
+    },
+    {
+      "id": "TF022",
+      "name": "Rootless 安装路径及 rpath",
+      "diagnosticConditions": {
+        "anyRegex": [
+          "(?:not found|no such file|could not load|Library not loaded).*?(?:/var/jb|@rpath)",
+          "(?:/var/jb|@rpath).*?(?:not found|no such file|could not load)"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge >= 0.5.5",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "使用 packageSchemes=rootless；核对 /var/jb 与 @rpath，依赖也需 rootless 版本。",
+      "sources": [
+        "https://theos.dev/docs/rootless"
+      ],
+      "handling": {
+        "category": "choice",
+        "changeKind": "choice",
+        "handler": "advice",
+        "automaticEnabled": false
+      },
+      "validation": {
+        "status": "pending",
+        "evidence": "待本版回归，未验证建议不执行自动修改"
+      }
+    },
+    {
+      "id": "TF023",
+      "name": "Rootful 安装布局",
+      "diagnosticConditions": {
+        "anyRegex": [
+          "(?:not found|no such file|Library not loaded).*?/Library/MobileSubstrate",
+          "/Library/MobileSubstrate.*?(?:not found|no such file)"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge >= 0.5.5",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "确认目标有根环境，选择 rootful；不从 CPU 类型推断越狱布局。",
+      "sources": [
+        "https://theos.dev/docs/variables",
+        "https://theos.dev/docs/rootless"
+      ],
+      "handling": {
+        "category": "choice",
+        "changeKind": "choice",
+        "handler": "advice",
+        "automaticEnabled": false
+      },
+      "validation": {
+        "status": "pending",
+        "evidence": "待本版回归，未验证建议不执行自动修改"
+      }
+    },
+    {
+      "id": "TF024",
+      "name": "RootHide 路径与依赖",
+      "diagnosticConditions": {
+        "anyRegex": [
+          "(?:not found|no such file|could not load|Library not loaded).*?(?:RootHide|\\.jbroot)",
+          "(?:RootHide|\\.jbroot).*?(?:not found|no such file|unsupported)"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge >= 0.5.5",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "核对目标 RootHide 运行环境、.jbroot 定位与依赖构建方式，包标签不等于 Mach-O CPU ABI。",
+      "sources": [
+        "https://github.com/roothide/theos",
+        "https://theos.dev/docs/rootless"
+      ],
+      "handling": {
+        "category": "advice",
+        "changeKind": "advice",
+        "handler": "advice",
+        "automaticEnabled": false
+      },
+      "validation": {
+        "status": "pending",
+        "evidence": "待本版回归，未验证建议不执行自动修改"
+      }
+    },
+    {
+      "id": "TF025",
+      "name": "Debian Depends 或 control 元数据",
+      "diagnosticConditions": {
+        "anyRegex": [
+          "(?:missing|invalid|malformed|empty).*?(?:Depends|control|Package|Architecture|Version)",
+          "(?:Depends|control|Package|Architecture|Version).*?(?:missing|invalid|malformed|empty|required field)"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge >= 0.5.5",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "核对真实运行依赖及包 ID；缺失依赖需安装或提供，不自动删除 Depends。",
+      "sources": [
+        "https://theos.dev/docs/packaging",
+        "https://theos.dev/docs/rootless"
+      ],
+      "handling": {
+        "category": "advice",
+        "changeKind": "advice",
+        "handler": "advice",
+        "automaticEnabled": false
+      },
+      "validation": {
+        "status": "pending",
+        "evidence": "待本版回归，未验证建议不执行自动修改"
+      }
+    },
+    {
+      "id": "TF026",
+      "name": "设备架构及部署版本不匹配",
+      "diagnosticConditions": {
+        "anyRegex": [
+          "built for .*?(?:but|which is not|incompatible)",
+          "(?:incompatible|unsupported|wrong|missing|required) architecture",
+          "building for .*?but (?:linking|attempting)",
+          "built for newer iOS",
+          "arm64e.*?(?:unsupported|not supported|ABI|subtype)"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge >= 0.5.5",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "检查 Mach-O 架构、部署目标及依赖；当前 LLVM14 arm64e 输出受限，建议核对 arm64，DEB 架构标签单独处理。",
+      "sources": [
+        "https://releases.llvm.org/14.0.0/tools/clang/docs/UsersManual.html",
+        "https://theos.dev/docs/rootless"
+      ],
+      "handling": {
+        "category": "advice",
+        "changeKind": "advice",
+        "handler": "advice",
+        "automaticEnabled": false
+      },
+      "validation": {
+        "status": "pending",
+        "evidence": "待本版回归，未验证建议不执行自动修改"
+      }
+    },
+    {
+      "id": "TF027",
+      "name": "Objective-C 字符串缺少 @ 前缀",
+      "diagnosticConditions": {
+        "anyContains": [
+          "string literal must be prefixed by '@'"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge（包含 upstream-1 规则目录的版本）",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "使用 Clang 给出的精确插入位置补 @；仅限普通字符串字面量，不推断字符指针的业务用途。",
+      "sources": [
+        "https://github.com/llvm/llvm-project/blob/llvmorg-14.0.0/clang/test/FixIt/fixit-objc.m"
+      ],
+      "handling": {
+        "category": "repairable",
+        "changeKind": "source",
+        "handler": "objc_string",
+        "automaticEnabled": true
+      },
+      "validation": {
+        "status": "verified",
+        "scope": "bundled LLVM14 compiler Fix-It, successful arm64 iOS Mach-O object rebuild, stale/repeat/undo/negative cases",
+        "evidence": "evidence/rules-upstream-expansion/results.json"
+      },
+      "upstream": {
+        "project": "llvm/llvm-project",
+        "revision": "llvmorg-14.0.0",
+        "integration": "compiler-fixit-whitelist",
+        "source": "https://github.com/llvm/llvm-project/blob/llvmorg-14.0.0/clang/test/FixIt/fixit-objc.m"
+      }
+    },
+    {
+      "id": "TF028",
+      "name": "表达式末尾多余的右括号",
+      "diagnosticConditions": {
+        "anyContains": [
+          "extraneous ')' before ';'",
+          "extraneous ']' before ';'"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge（包含 upstream-1 规则目录的版本）",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "仅删除 Clang 精确标记的单个多余右括号，不自动配平整个文件。",
+      "sources": [
+        "https://github.com/llvm/llvm-project/blob/llvmorg-14.0.0/clang/test/FixIt/fixit-objc.m"
+      ],
+      "handling": {
+        "category": "repairable",
+        "changeKind": "source",
+        "handler": "extra_delimiter",
+        "automaticEnabled": true
+      },
+      "validation": {
+        "status": "verified",
+        "scope": "bundled LLVM14 compiler Fix-It, successful arm64 iOS Mach-O object rebuild, stale/repeat/undo/negative cases",
+        "evidence": "evidence/rules-upstream-expansion/results.json"
+      },
+      "upstream": {
+        "project": "llvm/llvm-project",
+        "revision": "llvmorg-14.0.0",
+        "integration": "compiler-fixit-whitelist",
+        "source": "https://github.com/llvm/llvm-project/blob/llvmorg-14.0.0/clang/test/FixIt/fixit-objc.m"
+      }
+    },
+    {
+      "id": "TF029",
+      "name": "C 类型引用缺少 struct/union/enum 标签",
+      "diagnosticConditions": {
+        "anyContains": [
+          "must use 'struct' tag to refer to type",
+          "must use 'union' tag to refer to type",
+          "must use 'enum' tag to refer to type"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge（包含 upstream-1 规则目录的版本）",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "仅采用 Clang 的 struct/union/enum 前缀插入建议；不创建 typedef 或改变类型。",
+      "sources": [
+        "https://github.com/llvm/llvm-project/blob/llvmorg-14.0.0/clang/test/FixIt/fixit.c"
+      ],
+      "handling": {
+        "category": "repairable",
+        "changeKind": "source",
+        "handler": "tag_keyword",
+        "automaticEnabled": true
+      },
+      "validation": {
+        "status": "verified",
+        "scope": "bundled LLVM14 compiler Fix-It, successful arm64 iOS Mach-O object rebuild, stale/repeat/undo/negative cases",
+        "evidence": "evidence/rules-upstream-expansion/results.json"
+      },
+      "upstream": {
+        "project": "llvm/llvm-project",
+        "revision": "llvmorg-14.0.0",
+        "integration": "compiler-fixit-whitelist",
+        "source": "https://github.com/llvm/llvm-project/blob/llvmorg-14.0.0/clang/test/FixIt/fixit.c"
+      }
+    },
+    {
+      "id": "TF030",
+      "name": "枚举成员之间缺少逗号",
+      "diagnosticConditions": {
+        "anyContains": [
+          "missing ',' between enumerators"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge（包含 upstream-1 规则目录的版本）",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "只采用 Clang 给出的单个逗号插入，不改动成员值或排序。",
+      "sources": [
+        "https://github.com/llvm/llvm-project/blob/llvmorg-14.0.0/clang/test/FixIt/fixit.c"
+      ],
+      "handling": {
+        "category": "repairable",
+        "changeKind": "source",
+        "handler": "enum_comma",
+        "automaticEnabled": true
+      },
+      "validation": {
+        "status": "verified",
+        "scope": "bundled LLVM14 compiler Fix-It, successful arm64 iOS Mach-O object rebuild, stale/repeat/undo/negative cases",
+        "evidence": "evidence/rules-upstream-expansion/results.json"
+      },
+      "upstream": {
+        "project": "llvm/llvm-project",
+        "revision": "llvmorg-14.0.0",
+        "integration": "compiler-fixit-whitelist",
+        "source": "https://github.com/llvm/llvm-project/blob/llvmorg-14.0.0/clang/test/FixIt/fixit.c"
+      }
+    },
+    {
+      "id": "TF031",
+      "name": "链接阶段重复符号",
+      "diagnosticConditions": {
+        "anyContains": [
+          "duplicate symbol:",
+          "duplicate symbol _"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge（包含 upstream-1 规则目录的版本）",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "查看链接器列出的两个定义；核对重复源文件、头文件中的实体定义，以及同时编译 Logos 原文件和生成文件。不要直接删除实现或允许重复定义。",
+      "sources": [
+        "https://github.com/llvm/llvm-project/blob/llvmorg-14.0.0/lld/MachO/SymbolTable.cpp"
+      ],
+      "handling": {
+        "category": "advice",
+        "changeKind": "advice",
+        "handler": "advice",
+        "automaticEnabled": false
+      },
+      "validation": {
+        "status": "verified",
+        "scope": "pinned upstream diagnostic + production finding matcher positive/negative tests; advice only",
+        "evidence": "evidence/rules-upstream-expansion/results.json"
+      },
+      "upstream": {
+        "project": "llvm/llvm-project",
+        "revision": "llvmorg-14.0.0",
+        "integration": "diagnostic-guidance",
+        "source": "https://github.com/llvm/llvm-project/blob/llvmorg-14.0.0/lld/MachO/SymbolTable.cpp"
+      }
+    },
+    {
+      "id": "TF032",
+      "name": "编译阶段重复定义",
+      "diagnosticConditions": {
+        "anyContains": [
+          "redefinition of",
+          "duplicate interface definition for class"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge（包含 upstream-1 规则目录的版本）",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "检查诊断中的原定义位置、重复导入及头文件保护。先确定重复声明的来源，不自动删除接口或定义。",
+      "sources": [
+        "https://github.com/llvm/llvm-project/blob/llvmorg-14.0.0/clang/include/clang/Basic/DiagnosticSemaKinds.td"
+      ],
+      "handling": {
+        "category": "advice",
+        "changeKind": "advice",
+        "handler": "advice",
+        "automaticEnabled": false
+      },
+      "validation": {
+        "status": "verified",
+        "scope": "pinned upstream diagnostic + production finding matcher positive/negative tests; advice only; real bundled LLVM14 diagnostic reproduced",
+        "evidence": "evidence/rules-upstream-expansion/results.json"
+      },
+      "upstream": {
+        "project": "llvm/llvm-project",
+        "revision": "llvmorg-14.0.0",
+        "integration": "diagnostic-guidance",
+        "source": "https://github.com/llvm/llvm-project/blob/llvmorg-14.0.0/clang/include/clang/Basic/DiagnosticSemaKinds.td"
+      }
+    },
+    {
+      "id": "TF033",
+      "name": "仅有前向声明但需要完整类型",
+      "diagnosticConditions": {
+        "anyContains": [
+          "is a forward declaration",
+          "forward declaration of class here"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge（包含 upstream-1 规则目录的版本）",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "@class 只声明名称；访问成员或属性需要真实接口。确认相应头文件已存在并正确导入，避免补造私有类声明。",
+      "sources": [
+        "https://github.com/llvm/llvm-project/blob/llvmorg-14.0.0/clang/include/clang/Basic/DiagnosticSemaKinds.td"
+      ],
+      "handling": {
+        "category": "advice",
+        "changeKind": "advice",
+        "handler": "advice",
+        "automaticEnabled": false
+      },
+      "validation": {
+        "status": "verified",
+        "scope": "pinned upstream diagnostic + production finding matcher positive/negative tests; advice only; real bundled LLVM14 diagnostic reproduced",
+        "evidence": "evidence/rules-upstream-expansion/results.json"
+      },
+      "upstream": {
+        "project": "llvm/llvm-project",
+        "revision": "llvmorg-14.0.0",
+        "integration": "diagnostic-guidance",
+        "source": "https://github.com/llvm/llvm-project/blob/llvmorg-14.0.0/clang/include/clang/Basic/DiagnosticSemaKinds.td"
+      }
+    },
+    {
+      "id": "TF034",
+      "name": "Block 内修改捕获变量",
+      "diagnosticConditions": {
+        "anyContains": [
+          "variable is not assignable (missing __block type specifier)"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge（包含 upstream-1 规则目录的版本）",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "确认是否希望修改外层变量，再选择 __block 或调整数据流；__block 会改变捕获和生命周期语义，不自动插入。",
+      "sources": [
+        "https://github.com/llvm/llvm-project/blob/llvmorg-14.0.0/clang/include/clang/Basic/DiagnosticSemaKinds.td"
+      ],
+      "handling": {
+        "category": "advice",
+        "changeKind": "advice",
+        "handler": "advice",
+        "automaticEnabled": false
+      },
+      "validation": {
+        "status": "verified",
+        "scope": "pinned upstream diagnostic + production finding matcher positive/negative tests; advice only; real bundled LLVM14 diagnostic reproduced",
+        "evidence": "evidence/rules-upstream-expansion/results.json"
+      },
+      "upstream": {
+        "project": "llvm/llvm-project",
+        "revision": "llvmorg-14.0.0",
+        "integration": "diagnostic-guidance",
+        "source": "https://github.com/llvm/llvm-project/blob/llvmorg-14.0.0/clang/include/clang/Basic/DiagnosticSemaKinds.td"
+      }
+    },
+    {
+      "id": "TF035",
+      "name": "声明的方法缺少实现",
+      "diagnosticConditions": {
+        "anyContains": [
+          "method definition for"
+        ],
+        "caseSensitive": false,
+        "allContains": [
+          "not found"
+        ]
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge（包含 upstream-1 规则目录的版本）",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "核对 @implementation、分类及对应源文件是否参与当前目标；不要生成空方法来消除诊断。",
+      "sources": [
+        "https://github.com/llvm/llvm-project/blob/llvmorg-14.0.0/clang/include/clang/Basic/DiagnosticSemaKinds.td"
+      ],
+      "handling": {
+        "category": "advice",
+        "changeKind": "advice",
+        "handler": "advice",
+        "automaticEnabled": false
+      },
+      "validation": {
+        "status": "verified",
+        "scope": "pinned upstream diagnostic + production finding matcher positive/negative tests; advice only; real bundled LLVM14 diagnostic reproduced",
+        "evidence": "evidence/rules-upstream-expansion/results.json"
+      },
+      "upstream": {
+        "project": "llvm/llvm-project",
+        "revision": "llvmorg-14.0.0",
+        "integration": "diagnostic-guidance",
+        "source": "https://github.com/llvm/llvm-project/blob/llvmorg-14.0.0/clang/include/clang/Basic/DiagnosticSemaKinds.td"
+      }
+    },
+    {
+      "id": "TF036",
+      "name": "API 高于项目最低系统版本",
+      "diagnosticConditions": {
+        "anyContains": [
+          "is only available on iOS",
+          "is only available in iOS"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge（包含 upstream-1 规则目录的版本）",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "检查实际部署版本和 SDK；可选择保留最低版本并增加 @available 检查，或确认支持范围后提高部署版本。不直接移除可用性检查。",
+      "sources": [
+        "https://github.com/llvm/llvm-project/blob/llvmorg-14.0.0/clang/include/clang/Basic/DiagnosticSemaKinds.td"
+      ],
+      "handling": {
+        "category": "advice",
+        "changeKind": "advice",
+        "handler": "advice",
+        "automaticEnabled": false
+      },
+      "validation": {
+        "status": "verified",
+        "scope": "pinned upstream diagnostic + production finding matcher positive/negative tests; advice only; real bundled LLVM14 diagnostic reproduced",
+        "evidence": "evidence/rules-upstream-expansion/results.json"
+      },
+      "upstream": {
+        "project": "llvm/llvm-project",
+        "revision": "llvmorg-14.0.0",
+        "integration": "diagnostic-guidance",
+        "source": "https://github.com/llvm/llvm-project/blob/llvmorg-14.0.0/clang/include/clang/Basic/DiagnosticSemaKinds.td"
+      }
+    },
+    {
+      "id": "TF037",
+      "name": "头文件路径大小写不一致",
+      "diagnosticConditions": {
+        "anyContains": [
+          "non-portable path to file"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge（包含 upstream-1 规则目录的版本）",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "按磁盘中的真实大小写修正 include/import；同时检查跨大小写敏感文件系统时的同名冲突。",
+      "sources": [
+        "https://github.com/llvm/llvm-project/blob/llvmorg-14.0.0/clang/include/clang/Basic/DiagnosticLexKinds.td"
+      ],
+      "handling": {
+        "category": "advice",
+        "changeKind": "advice",
+        "handler": "advice",
+        "automaticEnabled": false
+      },
+      "validation": {
+        "status": "verified",
+        "scope": "pinned upstream diagnostic + production finding matcher positive/negative tests; advice only",
+        "evidence": "evidence/rules-upstream-expansion/results.json"
+      },
+      "upstream": {
+        "project": "llvm/llvm-project",
+        "revision": "llvmorg-14.0.0",
+        "integration": "diagnostic-guidance",
+        "source": "https://github.com/llvm/llvm-project/blob/llvmorg-14.0.0/clang/include/clang/Basic/DiagnosticLexKinds.td"
+      }
+    },
+    {
+      "id": "TF038",
+      "name": "头文件保护宏不一致",
+      "diagnosticConditions": {
+        "anyContains": [
+          "is used as a header guard here, followed by #define of a different macro"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge（包含 upstream-1 规则目录的版本）",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "比对 #ifndef 与对应 #define；确认宏用途后统一名称，避免盲目添加重复保护或改变条件编译。",
+      "sources": [
+        "https://github.com/llvm/llvm-project/blob/llvmorg-14.0.0/clang/include/clang/Basic/DiagnosticLexKinds.td"
+      ],
+      "handling": {
+        "category": "advice",
+        "changeKind": "advice",
+        "handler": "advice",
+        "automaticEnabled": false
+      },
+      "validation": {
+        "status": "verified",
+        "scope": "pinned upstream diagnostic + production finding matcher positive/negative tests; advice only; real bundled LLVM14 diagnostic reproduced",
+        "evidence": "evidence/rules-upstream-expansion/results.json"
+      },
+      "upstream": {
+        "project": "llvm/llvm-project",
+        "revision": "llvmorg-14.0.0",
+        "integration": "diagnostic-guidance",
+        "source": "https://github.com/llvm/llvm-project/blob/llvmorg-14.0.0/clang/include/clang/Basic/DiagnosticLexKinds.td"
+      }
+    },
+    {
+      "id": "TF039",
+      "name": "条件编译指令未闭合",
+      "diagnosticConditions": {
+        "anyContains": [
+          "unterminated conditional directive"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge（包含 upstream-1 规则目录的版本）",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "从诊断指向的 #if/#ifdef/#ifndef 检查嵌套与 #endif；恢复正确条件分支，不简单在文件末尾补齐。",
+      "sources": [
+        "https://github.com/llvm/llvm-project/blob/llvmorg-14.0.0/clang/include/clang/Basic/DiagnosticLexKinds.td"
+      ],
+      "handling": {
+        "category": "advice",
+        "changeKind": "advice",
+        "handler": "advice",
+        "automaticEnabled": false
+      },
+      "validation": {
+        "status": "verified",
+        "scope": "pinned upstream diagnostic + production finding matcher positive/negative tests; advice only; real bundled LLVM14 diagnostic reproduced",
+        "evidence": "evidence/rules-upstream-expansion/results.json"
+      },
+      "upstream": {
+        "project": "llvm/llvm-project",
+        "revision": "llvmorg-14.0.0",
+        "integration": "diagnostic-guidance",
+        "source": "https://github.com/llvm/llvm-project/blob/llvmorg-14.0.0/clang/include/clang/Basic/DiagnosticLexKinds.td"
+      }
+    },
+    {
+      "id": "TF040",
+      "name": "Logos 块缺少 %end",
+      "diagnosticConditions": {
+        "anyContains": [
+          "missing %end ("
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge（包含 upstream-1 规则目录的版本）",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "根据 Logos 标记的打开位置核对 %hook/%group/%subclass 的嵌套；先确定闭合位置，不自动在文件末尾追加。",
+      "sources": [
+        "https://github.com/theos/logos/blob/777925d1add4ee3485a2432a6f6d5e3ded59de7b/bin/logos.pl"
+      ],
+      "handling": {
+        "category": "advice",
+        "changeKind": "advice",
+        "handler": "advice",
+        "automaticEnabled": false
+      },
+      "validation": {
+        "status": "verified",
+        "scope": "pinned upstream diagnostic + production finding matcher positive/negative tests; advice only; real bundled Logos parser diagnostic reproduced",
+        "evidence": "evidence/rules-upstream-expansion/results.json"
+      },
+      "upstream": {
+        "project": "theos/logos",
+        "revision": "777925d1add4ee3485a2432a6f6d5e3ded59de7b",
+        "integration": "diagnostic-guidance",
+        "source": "https://github.com/theos/logos/blob/777925d1add4ee3485a2432a6f6d5e3ded59de7b/bin/logos.pl"
+      }
+    },
+    {
+      "id": "TF041",
+      "name": "Logos 指令位于错误作用域",
+      "diagnosticConditions": {
+        "anyContains": [
+          "%orig found outside of",
+          "%new found outside of",
+          "%end found outside of",
+          "%orig does not make sense outside",
+          "%end does not make sense outside"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge（包含 upstream-1 规则目录的版本）",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "按 Logos 报告检查当前方法及 %hook/%subclass 作用域，尤其是前面的花括号和 %end；不移动 hook 代码。",
+      "sources": [
+        "https://github.com/theos/logos/blob/777925d1add4ee3485a2432a6f6d5e3ded59de7b/bin/logos.pl"
+      ],
+      "handling": {
+        "category": "advice",
+        "changeKind": "advice",
+        "handler": "advice",
+        "automaticEnabled": false
+      },
+      "validation": {
+        "status": "verified",
+        "scope": "pinned upstream diagnostic + production finding matcher positive/negative tests; advice only; real bundled Logos parser diagnostic reproduced",
+        "evidence": "evidence/rules-upstream-expansion/results.json"
+      },
+      "upstream": {
+        "project": "theos/logos",
+        "revision": "777925d1add4ee3485a2432a6f6d5e3ded59de7b",
+        "integration": "diagnostic-guidance",
+        "source": "https://github.com/theos/logos/blob/777925d1add4ee3485a2432a6f6d5e3ded59de7b/bin/logos.pl"
+      }
+    },
+    {
+      "id": "TF042",
+      "name": "Logos hook group 尚未初始化",
+      "diagnosticConditions": {
+        "anyContains": [
+          "non-initialized hook group"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge（包含 upstream-1 规则目录的版本）",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "检查 %group 是否应在 %ctor 中以 %init(GroupName) 初始化，并核对条件分支；初始化时机由项目决定。",
+      "sources": [
+        "https://github.com/theos/logos/blob/777925d1add4ee3485a2432a6f6d5e3ded59de7b/bin/logos.pl"
+      ],
+      "handling": {
+        "category": "advice",
+        "changeKind": "advice",
+        "handler": "advice",
+        "automaticEnabled": false
+      },
+      "validation": {
+        "status": "verified",
+        "scope": "pinned upstream diagnostic + production finding matcher positive/negative tests; advice only; real bundled Logos parser diagnostic reproduced",
+        "evidence": "evidence/rules-upstream-expansion/results.json"
+      },
+      "upstream": {
+        "project": "theos/logos",
+        "revision": "777925d1add4ee3485a2432a6f6d5e3ded59de7b",
+        "integration": "diagnostic-guidance",
+        "source": "https://github.com/theos/logos/blob/777925d1add4ee3485a2432a6f6d5e3ded59de7b/bin/logos.pl"
+      }
+    },
+    {
+      "id": "TF043",
+      "name": "Logos group 被重复初始化",
+      "diagnosticConditions": {
+        "anyContains": [
+          "re-%init of %group"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge（包含 upstream-1 规则目录的版本）",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "查看首次初始化位置，排查自动构造器和显式 %ctor 的重复路径；不要直接删除任一 %init。",
+      "sources": [
+        "https://github.com/theos/logos/blob/777925d1add4ee3485a2432a6f6d5e3ded59de7b/bin/logos.pl"
+      ],
+      "handling": {
+        "category": "advice",
+        "changeKind": "advice",
+        "handler": "advice",
+        "automaticEnabled": false
+      },
+      "validation": {
+        "status": "verified",
+        "scope": "pinned upstream diagnostic + production finding matcher positive/negative tests; advice only; real bundled Logos parser diagnostic reproduced",
+        "evidence": "evidence/rules-upstream-expansion/results.json"
+      },
+      "upstream": {
+        "project": "theos/logos",
+        "revision": "777925d1add4ee3485a2432a6f6d5e3ded59de7b",
+        "integration": "diagnostic-guidance",
+        "source": "https://github.com/theos/logos/blob/777925d1add4ee3485a2432a6f6d5e3ded59de7b/bin/logos.pl"
+      }
+    },
+    {
+      "id": "TF044",
+      "name": "Logos 多分组需要显式构造器",
+      "diagnosticConditions": {
+        "anyContains": [
+          "Cannot generate an autoconstructor with multiple %groups"
+        ],
+        "caseSensitive": false
+      },
+      "applicableVersions": {
+        "compiler": "LLVM/Clang 14.x",
+        "app": "TweakForge（包含 upstream-1 规则目录的版本）",
+        "platform": "iOS >= 15"
+      },
+      "explanation": "根据每个 group 的启用条件设计显式 %ctor 和 %init；不默认同时启用全部 hook group。",
+      "sources": [
+        "https://github.com/theos/logos/blob/777925d1add4ee3485a2432a6f6d5e3ded59de7b/bin/logos.pl"
+      ],
+      "handling": {
+        "category": "advice",
+        "changeKind": "advice",
+        "handler": "advice",
+        "automaticEnabled": false
+      },
+      "validation": {
+        "status": "verified",
+        "scope": "pinned upstream diagnostic + production finding matcher positive/negative tests; advice only; real bundled Logos parser diagnostic reproduced",
+        "evidence": "evidence/rules-upstream-expansion/results.json"
+      },
+      "upstream": {
+        "project": "theos/logos",
+        "revision": "777925d1add4ee3485a2432a6f6d5e3ded59de7b",
+        "integration": "diagnostic-guidance",
+        "source": "https://github.com/theos/logos/blob/777925d1add4ee3485a2432a6f6d5e3ded59de7b/bin/logos.pl"
+      }
+    }
+  ],
+  "catalogRevision": "2026-10-27-upstream-1"
+}

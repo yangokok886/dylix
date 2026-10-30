@@ -1,0 +1,12 @@
+Dylix original code and modifications
+Copyright (C) 2026 Dylix contributors
+SPDX-License-Identifier: GPL-3.0-or-later
+
+Except where a file states otherwise, original Dylix application code,
+project glue and scripts are licensed under GNU GPL version 3 or any later version.
+See LICENSE for the complete terms. No warranty is provided.
+
+Vendored upstream code, resources and prebuilt dependencies retain their own
+copyright and license notices. They are not relicensed by this statement.
+Apple SDKs are external proprietary build inputs, excluded from this repository.
+See THIRD_PARTY_NOTICES.md and Resources/ThirdPartyNotices/.

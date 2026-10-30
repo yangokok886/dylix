@@ -1,0 +1,122 @@
+[
+  {
+    "name": "LLVM",
+    "license": "Apache-2.0 with LLVM exceptions",
+    "source": "https://github.com/llvm/llvm-project/tree/llvmorg-14.0.0",
+    "file": "llvm-LICENSE.txt"
+  },
+  {
+    "name": "Clang",
+    "license": "Apache-2.0 with LLVM exceptions",
+    "source": "https://github.com/holzschu/llvm-project",
+    "file": "clang-LICENSE.txt"
+  },
+  {
+    "name": "LLD",
+    "license": "Apache-2.0 with LLVM exceptions",
+    "source": "https://github.com/holzschu/llvm-project",
+    "file": "lld-LICENSE.txt"
+  },
+  {
+    "name": "ios_system",
+    "license": "BSD-3-Clause",
+    "source": "https://github.com/holzschu/ios_system",
+    "file": "ios_system-LICENSE.txt"
+  },
+  {
+    "name": "Perl 5.34.0",
+    "license": "Artistic 1.0 / GPL（见原文）",
+    "source": "https://github.com/holzschu/perl5",
+    "file": "perl-artistic-LICENSE.txt"
+  },
+  {
+    "name": "Perl GPL 文本",
+    "license": "GPL（Perl 双许可证选项）",
+    "source": "https://github.com/holzschu/perl5",
+    "file": "perl-LICENSE.txt"
+  },
+  {
+    "name": "Theos Logos",
+    "license": "GPL-3.0-or-later",
+    "source": "https://github.com/theos/logos",
+    "file": "Logos-LICENSE.txt"
+  },
+  {
+    "name": "highlight.js",
+    "license": "BSD-3-Clause",
+    "source": "https://github.com/highlightjs/highlight.js",
+    "file": "highlight.js-LICENSE.txt"
+  },
+  {
+    "name": "MBProgressHUD",
+    "license": "MIT",
+    "source": "https://github.com/jdg/MBProgressHUD",
+    "file": "MBProgressHUD-LICENSE.txt"
+  },
+  {
+    "name": "libarchive（系统组件）",
+    "license": "BSD 及文件级许可（见原文）",
+    "source": "https://github.com/libarchive/libarchive",
+    "file": "libarchive-LICENSE.txt"
+  },
+  {
+    "name": "libgit2 1.9.7",
+    "license": "GPL-2.0-only with linking exception",
+    "source": "https://github.com/libgit2/libgit2/tree/v1.9.7",
+    "file": "libgit2-LICENSE.txt"
+  },
+  {
+    "name": "diff2html 3.4.55",
+    "license": "MIT",
+    "source": "https://github.com/rtfpessoa/diff2html/tree/3.4.55",
+    "file": "diff2html-MIT.txt"
+  },
+  {
+    "name": "jsdiff（diff2html 内含）",
+    "license": "BSD-3-Clause",
+    "source": "https://github.com/kpdecker/jsdiff/tree/7.0.0",
+    "file": "jsdiff-LICENSE.txt"
+  },
+  {
+    "name": "Hogan（diff2html 内含）",
+    "license": "Apache-2.0",
+    "source": "https://github.com/twitter/hogan.js",
+    "file": "hogan-LICENSE.txt"
+  },
+  {
+    "name": "AI 模块与研究参考",
+    "license": "独立原生实现 · 上游许可见说明",
+    "source": "https://github.com/cline/cline",
+    "file": "AI-Research.txt"
+  },
+  {
+    "name": "REipa 0.1.0",
+    "license": "MIT",
+    "source": "https://github.com/JRBusiness/REipa",
+    "file": "REipa-MIT.txt"
+  },
+  {
+    "name": "Rust standard library 1.99.1",
+    "license": "MIT / Apache-2.0（依赖归属见完整清单）",
+    "source": "https://github.com/rust-lang/rust/tree/1.99.1",
+    "file": "Rust-LICENSE.txt"
+  },
+  {
+    "name": "thiserror 与 Rust 宏依赖",
+    "license": "MIT / Apache-2.0 / Unicode-3.0（见原文）",
+    "source": "https://github.com/dtolnay/thiserror",
+    "file": "REipa-Rust-Dependencies.txt"
+  },
+  {
+    "name": "iOS tweak development 指南",
+    "license": "MIT",
+    "source": "https://github.com/liamschwie/skills/tree/main/skills/ios-tweak-development",
+    "file": "ios-tweak-skills-LICENSE.txt"
+  },
+  {
+    "name": "Cydia Substrate compatibility header",
+    "license": "BSD-style (see header)",
+    "source": "https://github.com/theos/headers",
+    "file": "CydiaSubstrate-header.txt"
+  }
+]

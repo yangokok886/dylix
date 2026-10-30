@@ -1,0 +1,13 @@
+{
+  "engine": "highlight.js",
+  "version": "11.11.1",
+  "license": "BSD-3-Clause",
+  "url": "https://github.com/highlightjs/cdn-release/tree/11.11.1/build",
+  "sha256": "c4a399dd6f488bc97a3546e3476747b3e714c99c57b9473154c6fb8d259b9381",
+  "references": [
+    "https://github.com/simonbs/Runestone",
+    "https://github.com/raspu/Highlightr",
+    "https://github.com/microsoft/monaco-editor"
+  ],
+  "integration": "Native UITextView / JavaScriptCore. No code execution of user source."
+}

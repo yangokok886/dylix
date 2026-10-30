@@ -1,0 +1,8 @@
+Package: local.mobilecompiler.multisource
+Name: LocalMultiTest
+Version: 1.0.0
+Architecture: iphoneos-arm64
+Maintainer: Local Compiler Test
+Section: Tweaks
+Depends: mobilesubstrate, firmware (>= 15.0)
+Description: On-device multi-language compilation fixture
