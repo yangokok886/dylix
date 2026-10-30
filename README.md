@@ -8,7 +8,7 @@ iPhone / iPad 本机构建 · AI 开发助手 · 项目与 Git · 二进制工�
 
 [![License: GPL v3+](https://img.shields.io/badge/License-GPLv3%2B-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-iOS%20%2F%20iPadOS-black.svg)](#构建与安装)
-[更新日志](CHANGELOG.md) · [构建文档](docs/BUILDING.md) · [第三方许可](THIRD_PARTY_NOTICES.md) · [问题与建议](https://github.com/yangokok886/dylix/issues)
+[下载 IPA](https://github.com/yangokok886/dylix/releases/latest) · [界面预览](#界面预览) · [更新日志](CHANGELOG.md) · [构建文档](docs/BUILDING.md) · [第三方许可](THIRD_PARTY_NOTICES.md) · [问题与建议](https://github.com/yangokok886/dylix/issues)
 
 </div>
 
@@ -28,9 +28,51 @@ Dylix 是原生 iOS 插件开发工作台：在手机上管理源码、编辑代
 - **本地分析工具**：IPA Objective-C 头文件导出、Mach-O / dylib 静态信息检查、离线崩溃分析与符号匹配。
 - **后台辅助与存储**：系统后台任务、可选音频辅助、完成通知、分类及按文件清理。
 
-## 界面
+## 界面预览
 
-![开源版设置](docs/images/settings.png)
+从打开项目、编写源码，到让 AI 协作、在本机生成产物，主要操作都在同一个原生工作台中完成。
+
+### 写代码，也管理整个项目
+
+<p align="center">
+  <img src="docs/images/projects.png" width="280" alt="Dylix 项目模板与包信息设置" />
+  &nbsp;&nbsp;
+  <img src="docs/images/editor.png" width="280" alt="Dylix 原生源码编辑器" />
+</p>
+
+项目模板、最近项目、文件标签、语法着色与编辑快捷栏。当前架构、SDK 和最低系统版本直接显示在编辑器底部。
+
+### AI 协作，过程和正文各有位置
+
+<p align="center">
+  <img src="docs/images/chat.png" width="280" alt="AI 会话中的 Markdown 与代码块" />
+  &nbsp;&nbsp;
+  <img src="docs/images/files.png" width="280" alt="会话文件与项目文件入口" />
+</p>
+
+回复支持 Markdown 与独立代码块，处理过程可以折叠；附件、项目文件和生成内容从会话文件入口查找。开发操作按当前权限执行，普通会话也能创建或选择项目。
+
+### 本机构建，产物有据可查
+
+<p align="center">
+  <img src="docs/images/artifacts.png" width="280" alt="实际本机构建生成的 dylib 与 deb" />
+  &nbsp;&nbsp;
+  <img src="docs/images/sdk.png" width="280" alt="SDK、最低系统版本及产物构建设置" />
+</p>
+
+内嵌 Clang / LLD 与 Logos，在设备本机编译；查看构建记录、导出 dylib / deb。SDK 16.4 / 26.0 可选，最低系统和包布局按项目配置。
+
+### 版本管理与工作台设置
+
+<p align="center">
+  <img src="docs/images/git.png" width="280" alt="本地 Git 变更、暂存与提交" />
+  &nbsp;&nbsp;
+  <img src="docs/images/settings.png" width="280" alt="Dylix 设置与开源许可证入口" />
+</p>
+
+本地 Git 管理变更、提交与历史，远程支持 GitHub / Gitee。工作台集中提供编辑器、存储空间、开发工具和许可证入口。
+
+> 截图来自开源版 Build 134 的 iOS 模拟器；项目与 AI 对话使用演示数据。构建产物截图来自示例项目的实际本地编译；编译通过仍需在目标设备和宿主中验证运行效果。
 
 ## 构建与安装
 
