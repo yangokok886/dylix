@@ -89,7 +89,7 @@ rustup target add aarch64-apple-ios x86_64-apple-ios
 python3 scripts/build.py --sdk-root LocalSDKs/iPhoneOS26.0.sdk
 ```
 
-输出 `build/Dylix-1.0.3-build134-unsigned.ipa`。安装前使用自己的证书/适用安装方式处理主 App、Share Extension 和嵌套 framework 签名。仓库不包含个人证书、描述文件或共享 API 密钥。
+输出 `build/Dylix-1.0.4-build135-unsigned.ipa`。安装前使用自己的证书/适用安装方式处理主 App、Share Extension 和嵌套 framework 签名。仓库不包含个人证书、描述文件或共享 API 密钥。
 
 **两个 SDK 角色不同**：`--sdk-root` 决定 Dylix App 自身的构建 SDK；内嵌插件构建 SDK 可选 16.4 / 26.0，默认仍为 **SDK 16.4 + 最低 iOS 15**。
 
@@ -106,6 +106,8 @@ IPA 导出依据 Objective-C 元数据，不等于还原源码。加密镜像会
 设置中的“项目开源地址”打开本仓库，其下“软件许可证”可离线查看 GPL 完整条款。问题与建议请通过 GitHub Issues 提交并先脱敏。
 
 ## 许可证与致谢
+
+**开发协作**：本项目由 Xuegao 主导开发，OpenAI Codex / ChatGPT 辅助实现、调试与文档编写。
 
 Dylix 原创代码与修改采用 **GNU General Public License v3.0 or later（GPL-3.0-or-later）**，完整条款见 [LICENSE](LICENSE)。分发修改版或二进制时，请遵循 GPL 对相应源码、许可文本和必要构建材料的要求；软件按现状提供，不附带担保。
 
